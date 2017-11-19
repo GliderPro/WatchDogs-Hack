@@ -170,7 +170,7 @@ void __cdecl print(const char * format, ...)
 	char szBuff[1024];
 
 	va_start(argptr, format);
-	wvsprintf(szBuff, format, argptr);
+	wvsprintfA(szBuff, format, argptr);
 	va_end(argptr);
 
 	strcat_s(szBuff, "\n");
@@ -180,7 +180,7 @@ void __cdecl print(const char * format, ...)
 	strcpy_s(fileToWrite, g_path);
 	strcat_s(fileToWrite, "XxharCs WatchDogs Hack.log");
 
-	HANDLE hFile = CreateFile(fileToWrite, GENERIC_WRITE, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE hFile = CreateFileA(fileToWrite, GENERIC_WRITE, 0, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	SetFilePointer(hFile, 0, 0, FILE_END);
 

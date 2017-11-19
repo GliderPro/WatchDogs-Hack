@@ -2,7 +2,7 @@
 
 #include <string>
 #include <Windows.h>
-#include <xnamath.h>
+#include <DirectXMath.h>
 #include <memory>
 
 
@@ -25,7 +25,7 @@ public:
 class FontData
 {
 public:
-	XMFLOAT4 m_fTexCoords[0x60];
+	DirectX::XMFLOAT4 m_fTexCoords[0x60];
 
 	UINT32 m_TexWidth;
 	UINT32 m_TexHeight;
@@ -54,8 +54,8 @@ public:
 
 	virtual void SetDrawColor(DWORD colour) { m_Colour = colour; }
 
-	virtual void AddFilledRect(XMFLOAT4 rect) {};
-	virtual void AddFilledLine(XMFLOAT4 rect) {};
+	virtual void AddFilledRect(DirectX::XMFLOAT4 rect) {};
+	virtual void AddFilledLine(DirectX::XMFLOAT4 rect) {};
 
 	virtual HRESULT LoadFont(Font* font) { return E_FAIL; };
 	virtual void FreeFont(Font* font) {};

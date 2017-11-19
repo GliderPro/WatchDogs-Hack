@@ -14,9 +14,9 @@ void D3DMenu::DrawGui(std::shared_ptr<Renderer> renderer, DWORD col)
 	else
 		col |= background * 0x30000000;	// transparency
 	renderer->SetDrawColor(col);
-	renderer->AddFilledRect(XMFLOAT4(x - 3.f, y - 2.f, totwidth + 6.f, totheight + 4.f));
+	renderer->AddFilledRect(DirectX::XMFLOAT4(x - 3.f, y - 2.f, totwidth + 6.f, totheight + 4.f));
 	renderer->SetDrawColor(col); //col | 0xff000000
-	renderer->AddFilledRect(XMFLOAT4(x - 3.f, y - 2.f, totwidth + 6.f, titleheight + 1.f));
+	renderer->AddFilledRect(DirectX::XMFLOAT4(x - 3.f, y - 2.f, totwidth + 6.f, titleheight + 1.f));
 }
 
 void Present(std::shared_ptr<Renderer> renderer)

@@ -1,8 +1,7 @@
 #include "D3D11Renderer.h"
-#include <d3dx11.h>
 #include <d3dcompiler.h>
 
-#pragma comment(lib, "d3dx11.lib")
+#pragma comment(lib, "d3dcompiler.lib")
 
 D3D11Renderer::D3D11Renderer(ID3D11Device* device) : Renderer(), m_pDevice(device), alive(false), Buffer(), FontBuffer()
 {
@@ -121,8 +120,8 @@ inline HRESULT CompileShaderFromMemory(const char* szdata, SIZE_T len, LPCSTR sz
 #endif
 
 	ID3DBlob* pErrorBlob;
-	hr = D3DX11CompileFromMemory(szdata, len, NULL, NULL, NULL, szEntryPoint, szShaderModel,
-		dwShaderFlags, 0, NULL, ppBlobOut, &pErrorBlob, NULL);
+	hr = D3DCompile(szdata, len, NULL, NULL, NULL, szEntryPoint, szShaderModel, 
+		dwShaderFlags, 0, ppBlobOut, &pErrorBlob);
 
 	if (FAILED(hr))
 	{
@@ -354,8 +353,8 @@ void D3D11Renderer::Present()
 		auto& data = var.second;
 		auto size = data->vertices.size();
 		m_pContext->PSSetShaderResources(0, 1, &data->m_Texture);
-		m_pContext->Draw(size, currentIndex);
-		currentIndex += size;
+		m_pContext->Draw(static_cast<UINT>(size), currentIndex);
+		currentIndex += static_cast<UINT>(size);
 	}
 
 	m_pContext->OMSetBlendState(m_pUILastBlendState, m_LastBlendFactor, m_LastBlendMask);
@@ -369,7 +368,7 @@ void D3D11Renderer::Present()
 	m_pContext->VSSetShader(m_LastVSShader, NULL, 0);
 }
 
-void D3D11Renderer::AddFilledRect(XMFLOAT4 rect)
+void D3D11Renderer::AddFilledRect(DirectX::XMFLOAT4 rect)
 {
 	float scalex = 1 / width * 2.f;
 	float scaley = 1 / height * 2.f;
@@ -381,32 +380,32 @@ void D3D11Renderer::AddFilledRect(XMFLOAT4 rect)
 
 	Vertex v[6] =
 	{
-		{ XMFLOAT3(rect.x, rect.w, 0.5f), m_Colour },
-		{ XMFLOAT3(rect.x, rect.y, 0.5f), m_Colour },
-		{ XMFLOAT3(rect.z, rect.w, 0.5f), m_Colour },
-		{ XMFLOAT3(rect.z, rect.y, 0.5f), m_Colour },
-		{ XMFLOAT3(rect.z, rect.w, 0.5f), m_Colour },
-		{ XMFLOAT3(rect.x, rect.y, 0.5f), m_Colour }
+		{ DirectX::XMFLOAT3(rect.x, rect.w, 0.5f), m_Colour },
+		{ DirectX::XMFLOAT3(rect.x, rect.y, 0.5f), m_Colour },
+		{ DirectX::XMFLOAT3(rect.z, rect.w, 0.5f), m_Colour },
+		{ DirectX::XMFLOAT3(rect.z, rect.y, 0.5f), m_Colour },
+		{ DirectX::XMFLOAT3(rect.z, rect.w, 0.5f), m_Colour },
+		{ DirectX::XMFLOAT3(rect.x, rect.y, 0.5f), m_Colour }
 	};
 	Buffer.Add(v, ARRAYSIZE(v));
 }
 
-void D3D11Renderer::AddFilledLine(XMFLOAT4 rect)
+void D3D11Renderer::AddFilledLine(DirectX::XMFLOAT4 rect)
 {
 	float scalex = 1 / width * 2.f;
 	float scaley = 1 / height * 2.f;
 
-	auto rec1 = XMFLOAT3(rect.x * scalex - 1.f, 1.f - rect.y * scaley, 1.f - (rect.y + 1) * scaley);
-	auto rec2 = XMFLOAT3(rect.z * scalex - 1.f, 1.f - rect.w * scaley, 1.f - (rect.w + 1) * scaley);
+	auto rec1 = DirectX::XMFLOAT3(rect.x * scalex - 1.f, 1.f - rect.y * scaley, 1.f - (rect.y + 1) * scaley);
+	auto rec2 = DirectX::XMFLOAT3(rect.z * scalex - 1.f, 1.f - rect.w * scaley, 1.f - (rect.w + 1) * scaley);
 	Vertex v[6] =
 	{
-		{ XMFLOAT3(rec2.x, rec2.y, 0.5f), m_Colour },
-		{ XMFLOAT3(rec1.x, rec1.z, 0.5f), m_Colour },
-		{ XMFLOAT3(rec1.x, rec1.y, 0.5f), m_Colour },
+		{ DirectX::XMFLOAT3(rec2.x, rec2.y, 0.5f), m_Colour },
+		{ DirectX::XMFLOAT3(rec1.x, rec1.z, 0.5f), m_Colour },
+		{ DirectX::XMFLOAT3(rec1.x, rec1.y, 0.5f), m_Colour },
 				 
-		{ XMFLOAT3(rec2.x, rec2.y, 0.5f), m_Colour },
-		{ XMFLOAT3(rec2.x, rec2.z, 0.5f), m_Colour },
-		{ XMFLOAT3(rec1.x, rec1.y, 0.5f), m_Colour },
+		{ DirectX::XMFLOAT3(rec2.x, rec2.y, 0.5f), m_Colour },
+		{ DirectX::XMFLOAT3(rec2.x, rec2.z, 0.5f), m_Colour },
+		{ DirectX::XMFLOAT3(rec1.x, rec1.y, 0.5f), m_Colour },
 	};
 	Buffer.Add(v, ARRAYSIZE(v));
 }
@@ -503,7 +502,7 @@ HRESULT D3D11Renderer::AddText(Font* font, float x, float y, float scale, const 
 	float scalex = 1 / (float)width * 2.f;
 	float scaley = 1 / (float)height * 2.f;
 
-	XMFLOAT4A loc(x * scalex - 1.f, 1.f - y * scaley, 0.f, 0.f);
+	DirectX::XMFLOAT4A loc(x * scalex - 1.f, 1.f - y * scaley, 0.f, 0.f);
 
 	auto& data = Fonts[font];
 
@@ -547,10 +546,10 @@ HRESULT D3D11Renderer::AddText(Font* font, float x, float y, float scale, const 
 		{
 
 			FontVertex v[6];
-			v[0] = { { XMFLOAT3(loc.x, loc.w, 0.5f), m_Colour }, XMFLOAT2(data->m_fTexCoords[c].x, data->m_fTexCoords[c].w) };
-			v[1] = { { XMFLOAT3(loc.x, loc.y, 0.5f), m_Colour }, XMFLOAT2(data->m_fTexCoords[c].x, data->m_fTexCoords[c].y) };
-			v[2] = { { XMFLOAT3(loc.z, loc.w, 0.5f), m_Colour }, XMFLOAT2(data->m_fTexCoords[c].z, data->m_fTexCoords[c].w) };
-			v[3] = { { XMFLOAT3(loc.z, loc.y, 0.5f), m_Colour }, XMFLOAT2(data->m_fTexCoords[c].z, data->m_fTexCoords[c].y) };
+			v[0] = { { DirectX::XMFLOAT3(loc.x, loc.w, 0.5f), m_Colour }, DirectX::XMFLOAT2(data->m_fTexCoords[c].x, data->m_fTexCoords[c].w) };
+			v[1] = { { DirectX::XMFLOAT3(loc.x, loc.y, 0.5f), m_Colour }, DirectX::XMFLOAT2(data->m_fTexCoords[c].x, data->m_fTexCoords[c].y) };
+			v[2] = { { DirectX::XMFLOAT3(loc.z, loc.w, 0.5f), m_Colour }, DirectX::XMFLOAT2(data->m_fTexCoords[c].z, data->m_fTexCoords[c].w) };
+			v[3] = { { DirectX::XMFLOAT3(loc.z, loc.y, 0.5f), m_Colour }, DirectX::XMFLOAT2(data->m_fTexCoords[c].z, data->m_fTexCoords[c].y) };
 			v[4] = v[2];
 			v[5] = v[1];
 

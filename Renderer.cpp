@@ -53,7 +53,7 @@ HRESULT FontData::CreateFontObjects(const Font font, FontData* data, std::unique
 
 	float spacing = sz.cx;
 
-	std::vector<XMFLOAT4> sizes;
+	std::vector<DirectX::XMFLOAT4> sizes;
 
 	for (char c = 32; c < 127; c++)
 	{
@@ -66,7 +66,7 @@ HRESULT FontData::CreateFontObjects(const Font font, FontData* data, std::unique
 			y += sz.cy;
 		}
 
-		sizes.push_back(XMFLOAT4(x, y, x + sz.cx, y + sz.cy));
+		sizes.push_back(DirectX::XMFLOAT4(x, y, x + sz.cx, y + sz.cy));
 
 		x += sz.cx + spacing / 2;
 	}

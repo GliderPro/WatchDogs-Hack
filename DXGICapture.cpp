@@ -84,7 +84,7 @@ IDXGISwapChain* CreateDummySwap()
 	HRESULT hErr;
 	HMODULE hDll;
 
-	hDll = GetModuleHandle("d3d11.dll");
+	hDll = GetModuleHandleA("d3d11.dll");
 	if (hDll)
 	{
 		D3D11CREATEPROC d3d11Create = (D3D11CREATEPROC)GetProcAddress(hDll, "D3D11CreateDeviceAndSwapChain");

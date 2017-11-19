@@ -82,7 +82,7 @@ protected:
 				memcpy(data, vertices.data(), sizeof(T) * size);
 				data += size;
 			}
-			numVertices += size;
+			numVertices += static_cast<DWORD>(size);
 		}
 
 		inline void Add(const T& vertex)
@@ -121,14 +121,14 @@ protected:
 	};
 	struct Vertex
 	{
-		XMFLOAT3 vec;
+		DirectX::XMFLOAT3 vec;
 		DWORD color;
 	};
 
 	struct FontVertex
 	{
 		Vertex vertex;
-		XMFLOAT2 uv;
+		DirectX::XMFLOAT2 uv;
 	};
 
 	class D3D11FontData : protected FontData
@@ -193,8 +193,8 @@ public:
 	virtual void End();
 	virtual void Present();
 
-	virtual void AddFilledRect(XMFLOAT4 rect);
-	virtual void AddFilledLine(XMFLOAT4 rect);
+	virtual void AddFilledRect(DirectX::XMFLOAT4 rect);
+	virtual void AddFilledLine(DirectX::XMFLOAT4 rect);
 
 	virtual HRESULT LoadFont(Font* font);
 	virtual void FreeFont(Font* font);
